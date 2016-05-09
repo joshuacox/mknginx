@@ -103,6 +103,7 @@ proxy:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	docker run -d -p 80:80 -p 443:443 \
 	--name nginx-proxy \
+	--cidfile="cid" \
 	-v /var/run/docker.sock:/tmp/docker.sock:ro \
 	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs \
 	-v $(NGINX_DATADIR)/etc/nginx/vhost.d:/etc/nginx/vhost.d \
