@@ -104,6 +104,7 @@ proxy: cid genCID letsencryptCID
 cid:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval NAME := $(shell cat NAME))
+	docker pull nginx
 	docker run -d -p 80:80 -p 443:443 \
  --name=$(NAME) \
 	--cidfile="cid" \
