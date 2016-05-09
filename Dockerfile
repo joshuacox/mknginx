@@ -9,7 +9,7 @@ ENV LANG en_US.UTF-8
 RUN apt-get -qq update ; \
 apt-get -qqy dist-upgrade ; \
 apt-get -qqy --no-install-recommends install locales \
-sudo procps ca-certificates wget pwgen supervisor; \
+git sudo procps ca-certificates wget pwgen supervisor; \
 apt-get install -y ca-certificates nginx && \
 echo 'en_US.ISO-8859-15 ISO-8859-15'>>/etc/locale.gen ; \
 echo 'en_US ISO-8859-1'>>/etc/locale.gen ; \
