@@ -130,7 +130,7 @@ genCID:
 	jwilder/nginx-proxy \
 	-notify-sighup nginx -watch -only-exposed -wait 5s:30s /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
 
-lestencryptCID:
+letsencryptCID:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval NAME := $(shell cat NAME))
 	docker run -d \
