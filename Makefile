@@ -98,3 +98,13 @@ NGINX_DATADIR:
 	@while [ -z "$$NGINX_DATADIR" ]; do \
 		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [NGINX_DATADIR]: " NGINX_DATADIR; echo "$$NGINX_DATADIR">>NGINX_DATADIR; cat NGINX_DATADIR; \
 	done ;
+
+proxy:
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	docker run -d -p 80:80 -p 443:443 \
+	--name nginx-proxy \
+	-v /var/run/docker.sock:/tmp/docker.sock:ro \
+	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs \
+	-v $(NGINX_DATADIR)/etc/nginx/vhost.d:/etc/nginx/vhost.d \
+	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
+	jwilder/nginx-proxy

@@ -24,7 +24,10 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
 RUN git clone https://github.com/letsencrypt/letsencrypt
-RUN cd /letsencrypt; ./letsencrypt-auto; echo 'export PATH=/root/.local/share/letsencrypt/bin:$PATH'>> /root/.bash_profile;cp /root/.bash_profile /root/.bashrc
+RUN cd /letsencrypt; ./letsencrypt-auto ; \
+./letsencrypt-auto --nginx \
+echo 'export PATH=/root/.local/share/letsencrypt/bin:$PATH'>> /root/.bash_profile ; \
+cp /root/.bash_profile /root/.bashrc
 
 RUN apt-get -y autoremove ; \
 apt-get clean ; \
