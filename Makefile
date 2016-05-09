@@ -147,5 +147,5 @@ letsencryptCID:
 	-e "NGINX_DOCKER_GEN_CONTAINER=$(NAME)-gen" \
 	--volumes-from $(NAME) \
 	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs:rw \
-	-v /var/run/docker.sock:/tmp/docker.sock:ro \
+	-v /var/run/docker.sock:/var/run/docker.sock:ro \
 	jrcs/letsencrypt-nginx-proxy-companion
