@@ -53,10 +53,16 @@ builddocker:
 
 kill:
 	-@docker kill `cat cid`
+	-@docker kill `cat genCID`
+	-@docker kill `cat letsencryptCID`
 
 rm-image:
 	-@docker rm `cat cid`
 	-@rm cid
+	-@docker rm `cat genCID`
+	-@rm genCID
+	-@docker rm `cat letsencryptCID`
+	-@rm letsencryptCID
 
 rm: kill rm-image
 
