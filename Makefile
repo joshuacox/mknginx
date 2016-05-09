@@ -129,6 +129,7 @@ genCID:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval NAME := $(shell cat NAME))
 	docker run -d \
+	--cidfile="genCID" \
 	--name=$(NAME)-gen \
 	--volumes-from $(NAME) \
 	-v $(NGINX_DATADIR)/etc/docker-gen/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro \
@@ -139,8 +140,10 @@ genCID:
 letsencryptCID:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval NAME := $(shell cat NAME))
+	--cidfile="cid" \
 	docker run -d \
 	--name=$(NAME)-letsencrypt \
+	--cidfile="letsencryptCID" \
 	-e "NGINX_DOCKER_GEN_CONTAINER=$(NAME)-gen" \
 	--volumes-from $(NAME) \
 	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs:rw \
