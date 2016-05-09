@@ -1,2 +1,2 @@
-# mknginx
-Make an nginx container PDQ
+# local-nginx
+local-nginx docker container with everything built locally
