@@ -132,7 +132,7 @@ genCID:
 	--cidfile="genCID" \
 	--name=$(NAME)-gen \
 	--volumes-from $(NAME) \
-	-v $(NGINX_DATADIR)/etc/docker-gen/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro \
+	-v $(NGINX_DATADIR)/etc/docker-gen/templates/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro \
 	-v /var/run/docker.sock:/tmp/docker.sock:ro \
 	jwilder/docker-gen -notify-sighup $(NAME) -watch -only-exposed -wait 5s:30s /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
 
