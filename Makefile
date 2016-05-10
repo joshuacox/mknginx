@@ -122,7 +122,7 @@ cid:
 
 template:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
-	@-mkdir -p  $(NGINX_DATADIR)/etc/docker-gen/template
+	@-mkdir -p  $(NGINX_DATADIR)/etc/docker-gen/templats
 	curl https://raw.githubusercontent.com/jwilder/nginx-proxy/master/nginx.tmpl > $(NGINX_DATADIR)/etc/docker-gen/templates/nginx.tmp
 
 genCID:
