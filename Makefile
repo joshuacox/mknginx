@@ -114,7 +114,6 @@ cid:
 	docker run -d -p 80:80 -p 443:443 \
  --name=$(NAME) \
 	--cidfile="cid" \
-	--net=host \
 	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs:ro \
 	-v $(NGINX_DATADIR)/etc/nginx/vhost.d:/etc/nginx/vhost.d \
 	-v $(NGINX_DATADIR)/etc/nginx/conf.d:/etc/nginx/conf.d \
@@ -131,7 +130,6 @@ genCID:
 	$(eval NAME := $(shell cat NAME))
 	docker run -d \
 	--cidfile="genCID" \
-	--net=host \
 	--name=$(NAME)-gen \
 	--volumes-from $(NAME) \
 	-v $(NGINX_DATADIR)/etc/docker-gen/templates/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro \
@@ -146,7 +144,6 @@ letsencryptCID:
 	--name=$(NAME)-letsencrypt \
 	--cidfile="letsencryptCID" \
 	-e "NGINX_DOCKER_GEN_CONTAINER=$(NAME)-gen" \
-	--net=host \
 	--volumes-from $(NAME) \
 	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs:rw \
 	-v /var/run/docker.sock:/var/run/docker.sock:ro \
