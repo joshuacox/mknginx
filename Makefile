@@ -148,3 +148,14 @@ letsencryptCID:
 	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs:rw \
 	-v /var/run/docker.sock:/var/run/docker.sock:ro \
 	jrcs/letsencrypt-nginx-proxy-companion
+
+test:
+	@while [ -z "$$HOSTNAME" ]; do \
+		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [HOSTNAME]: " HOSTNAME; echo "$$HOSTNAME"; \
+	done ;
+	docker run -d \
+	--name $$HOSTNAME-app \
+	-e "VIRTUAL_HOST=$$HOSTNAME" \
+	-e "LETSENCRYPT_HOST=$$HOSTNAME" \
+	-e "LETSENCRYPT_EMAIL=webmaster@$$HOSTNAME" \
+	tutum/apache-php
