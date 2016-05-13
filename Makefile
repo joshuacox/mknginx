@@ -112,11 +112,12 @@ cid:
 	$(eval NAME := $(shell cat NAME))
 	docker pull nginx
 	docker run -d -p 80:80 -p 443:443 \
- --name=$(NAME) \
+	--name=$(NAME) \
 	--cidfile="cid" \
 	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs:ro \
 	-v $(NGINX_DATADIR)/etc/nginx/vhost.d:/etc/nginx/vhost.d \
 	-v $(NGINX_DATADIR)/etc/nginx/conf.d:/etc/nginx/conf.d \
+	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
 	nginx
 
@@ -163,9 +164,28 @@ letstestCID:
 	tutum/apache-php
 
 
-certs:
+cert:
+	@while [ -z "$$HOSTNAME" ]; do \
+		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [HOSTNAME]: " HOSTNAME; echo "$$HOSTNAME"; \
+	done ;
+	@while [ -z "$$EMAIL" ]; do \
+		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL"; \
+	done ;
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
-	quay.io/letsencrypt/letsencrypt:latest auth
+	quay.io/letsencrypt/letsencrypt:latest auth --standalone -n -d $$HOSTNAME --agree-tos --email '$$EMAIL'
+
+renew:
+	@while [ -z "$$HOSTNAME" ]; do \
+		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [HOSTNAME]: " HOSTNAME; echo "$$HOSTNAME"; \
+	done ;
+	@while [ -z "$$EMAIL" ]; do \
+		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL"; \
+	done ;
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
+	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
+	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
+	quay.io/letsencrypt/letsencrypt:latest renew
