@@ -161,3 +161,11 @@ letstestCID:
 	-e "LETSENCRYPT_HOST=$$HOSTNAME" \
 	-e "LETSENCRYPT_EMAIL=webmaster@$$HOSTNAME" \
 	tutum/apache-php
+
+
+certs:
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
+	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
+	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
+	quay.io/letsencrypt/letsencrypt:latest auth
