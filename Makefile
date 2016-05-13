@@ -175,7 +175,7 @@ cert:
 	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
-	quay.io/letsencrypt/letsencrypt:latest auth --standalone -n -d $$HOSTNAME --agree-tos --email '$$EMAIL'
+	quay.io/letsencrypt/letsencrypt:latest auth --standalone -n -d "$$HOSTNAME" --agree-tos --email "$$EMAIL"
 
 renew:
 	@while [ -z "$$HOSTNAME" ]; do \
