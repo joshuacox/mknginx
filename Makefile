@@ -32,7 +32,8 @@ runtemp:
 	--cidfile="cid" \
 	-v $(TMP):/tmp \
 	-d \
-	-P \
+	-p 80:80 \
+	-p 443:443 \
 	-t $(TAG)
 
 runprod:
