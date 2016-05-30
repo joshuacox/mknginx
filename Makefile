@@ -19,7 +19,7 @@ temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
-next: grabnginxdir rm mvauto wait rm prod
+next: grabnginxdir rmtemp mvauto wait prod
 
 auto: temp waitforport80 next waitforport80
 
@@ -29,7 +29,7 @@ runtemp:
 	$(eval TAG := $(shell cat TAG))
 	chmod 777 $(TMP)
 	@docker run --name=$(NAME) \
-	--cidfile="cid" \
+	--cidfile="tmpCID" \
 	-v $(TMP):/tmp \
 	-d \
 	-p 80:80 \
@@ -56,6 +56,15 @@ runprod:
 
 builddocker:
 	/usr/bin/time -v docker build -t `cat TAG` .
+
+killtemp:
+	-@docker kill `cat tempCID`
+
+rmtemp-image:
+	-@docker rm `cat tempCID`
+	-@rm tempCID
+
+rmtemp: killtemp rmtemp-image
 
 kill:
 	-@docker kill `cat cid`
