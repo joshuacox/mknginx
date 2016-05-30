@@ -19,7 +19,7 @@ temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
-next: grabnginxdir rm mvauto wait prod
+next: grabnginxdir rm mvauto wait rm prod
 
 auto: temp waitforport80 next waitforport80
 
