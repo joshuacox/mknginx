@@ -19,9 +19,9 @@ temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
-next: grabnginxdir rm mvauto prod
+next: grabnginxdir rm mvauto wait prod
 
-auto: temp wait next wait
+auto: temp waitforport80 next waitforport80
 
 runtemp:
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
@@ -202,4 +202,5 @@ waitforport80:
 	@while ! curl --output /dev/null --silent --head --fail http://localhost; do sleep 2 && echo -n .; done;
 	@echo "check port 80, it appears that now it is up!"
 
-wait: waitforport80
+wait:
+	@sleep 5
