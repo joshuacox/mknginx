@@ -19,7 +19,7 @@ temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
-next: grab rmall mvauto prod
+next: grabnginxdir rmall mvauto prod
 
 auto: temp wait next wait
 
