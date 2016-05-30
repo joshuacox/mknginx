@@ -19,6 +19,10 @@ temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
+next: grab rmall mvauto prod
+
+auto: temp wait next wait
+
 runtemp:
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
 	$(eval NAME := $(shell cat NAME))
@@ -100,6 +104,11 @@ mvdatadir:
 	sudo mv -i datadir /tmp
 	echo /tmp/datadir > NGINX_DATADIR
 	echo "Move datadir out of tmp and update DATADIR here accordingly for persistence"
+
+mvauto:
+	@sudo mkdir -p /exports/icinga2
+	@sudo mv -i datadir /exports/icinga2/
+	@echo /exports/icinga2/datadir > NGINX_DATADIR
 
 NGINX_DATADIR:
 	@while [ -z "$$NGINX_DATADIR" ]; do \
@@ -187,3 +196,9 @@ renew:
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
 	quay.io/letsencrypt/letsencrypt:latest renew
 
+waitforport80:
+	@echo "Waiting for port 80 to become available"
+	@while ! curl --output /dev/null --silent --head --fail http://localhost; do sleep 2 && echo -n .; done;
+	@echo "check port 80, it appears that now it is up!"
+
+wait: waitforport80
