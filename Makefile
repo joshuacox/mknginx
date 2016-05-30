@@ -107,9 +107,9 @@ mvdatadir:
 	echo "Move datadir out of tmp and update DATADIR here accordingly for persistence"
 
 mvauto:
-	@sudo mkdir -p /exports/icinga2
-	@sudo mv -i datadir /exports/icinga2/
-	@echo /exports/icinga2/datadir > NGINX_DATADIR
+	@sudo mkdir -p /exports/nginx
+	@sudo mv -i datadir /exports/nginx/
+	@echo /exports/nginx/datadir > NGINX_DATADIR
 
 NGINX_DATADIR:
 	@while [ -z "$$NGINX_DATADIR" ]; do \
