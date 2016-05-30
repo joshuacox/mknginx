@@ -29,7 +29,7 @@ runtemp:
 	$(eval TAG := $(shell cat TAG))
 	chmod 777 $(TMP)
 	@docker run --name=$(NAME) \
-	--cidfile="tmpCID" \
+	--cidfile="tempCID" \
 	-v $(TMP):/tmp \
 	-d \
 	-p 80:80 \
