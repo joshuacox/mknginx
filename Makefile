@@ -105,8 +105,8 @@ grab: grabnginxdir mvdatadir
 
 grabnginxdir:
 	mkdir -p datadir/etc
-	docker cp `cat cid`:/usr/share/nginx/html - |sudo tar -C datadir/ -pxvf -
-	docker cp `cat cid`:/etc/nginx - |sudo tar -C datadir/etc -pxvf -
+	docker cp `cat tempCID`:/usr/share/nginx/html - |sudo tar -C datadir/ -pxvf -
+	docker cp `cat tempCID`:/etc/nginx - |sudo tar -C datadir/etc -pxvf -
 	sudo chown -R $(user). datadir/html
 	sudo chown -R $(user). datadir/etc
 
