@@ -19,7 +19,6 @@ server {
         proxy_read_timeout          75s;
         send_timeout                75s;
   location / {
-    include /etc/nginx/location.conf;
     proxy_pass http://REPLACEME_SITENAME;
   }
 }
