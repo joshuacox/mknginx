@@ -119,8 +119,6 @@ grabnginxdir: NGINX_DATADIR
 	mkdir -p $(NGINX_DATADIR)/etc
 	docker cp `cat cid`:/usr/share/nginx/html - |sudo tar -C $(NGINX_DATADIR)/ -pxvf -
 	docker cp `cat cid`:/etc/nginx - |sudo tar -C $(NGINX_DATADIR)/etc -pxvf -
-	sudo chown -R $(user). $(NGINX_DATADIR)/html
-	sudo chown -R $(user). $(NGINX_DATADIR)/etc
 
 NGINX_DATADIR:
 	@while [ -z "$$NGINX_DATADIR" ]; do \
