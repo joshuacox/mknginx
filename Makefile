@@ -167,12 +167,8 @@ letstestCID:
 
 cert:
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
-	@while [ -z "$(TMP)/$$HOSTNAME" ]; do \
-		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [HOSTNAME]: " HOSTNAME; echo "$$HOSTNAME" >$(TMP)/HOSTNAME; \
-	done ;
-	@while [ -z "$(TMP)/$$EMAIL" ]; do \
-		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL" > $(TMP)/EMAIL; \
-	done ;
+	read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [HOSTNAME]: " HOSTNAME; echo "$$HOSTNAME" >$(TMP)/HOSTNAME; \
+	read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL" > $(TMP)/EMAIL; \
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
