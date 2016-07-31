@@ -75,9 +75,34 @@ enter:
 logs:
 	docker logs -f `cat cid`
 
+EMAIL:
+	@while [ -z "$$EMAIL" ]; do \
+		read -r -p "Enter the name you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL">>EMAIL; cat EMAIL; \
+	done ;
+
 NAME:
 	@while [ -z "$$NAME" ]; do \
 		read -r -p "Enter the name you wish to associate with this container [NAME]: " NAME; echo "$$NAME">>NAME; cat NAME; \
+	done ;
+
+SITENAME:
+	@while [ -z "$$SITENAME" ]; do \
+		read -r -p "Enter the name you wish to associate with this container [SITENAME]: " SITENAME; echo "$$SITENAME">>SITENAME; cat SITENAME; \
+	done ;
+
+DOMAIN:
+	@while [ -z "$$DOMAIN" ]; do \
+		read -r -p "Enter the name you wish to associate with this container [DOMAIN]: " DOMAIN; echo "$$DOMAIN">>DOMAIN; cat DOMAIN; \
+	done ;
+
+IP:
+	@while [ -z "$$IP" ]; do \
+		read -r -p "Enter the name you wish to associate with this container [IP]: " IP; echo "$$IP">>IP; cat IP; \
+	done ;
+
+PORT:
+	@while [ -z "$$PORT" ]; do \
+		read -r -p "Enter the name you wish to associate with this container [PORT]: " PORT; echo "$$PORT">>PORT; cat PORT; \
 	done ;
 
 TAG:
@@ -183,3 +208,37 @@ renew:
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
 	quay.io/letsencrypt/letsencrypt:latest renew
 
+site: SITENAME DOMAIN IP PORT
+	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	$(eval PORT := $(shell cat PORT))
+	$(eval IP := $(shell cat IP))
+	$(eval DOMAIN := $(shell cat DOMAIN))
+	$(eval SITENAME := $(shell cat SITENAME))
+	echo $(PORT)
+	echo $(SITENAME)
+	echo $(DOMAIN)
+	cp site.template $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_PORT/$(PORT)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_IP/$(IP)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_DOMAIN/$(DOMAIN)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_SITENAME/$(SITENAME)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	cat $(TMP)/$(SITENAME).$(DOMAIN)
+	rm -Rf $(TMP)
+
+sitecert: EMAIL SITENAME DOMAIN
+	$(eval DOMAIN := $(shell cat DOMAIN))
+	$(eval EMAIL := $(shell cat EMAIL))
+	$(eval SITENAME := $(shell cat SITENAME))
+	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
+	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
+	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
+	quay.io/letsencrypt/letsencrypt:latest auth --standalone -n -d "$(SITENAME).$(DOMAIN)" --agree-tos --email "$(EMAIL)"
+
+nusite: cleansite site
+
+cleansite:
+	-@rm SITENAME
+	-@rm PORT
+	-@rm DOMAIN
+	-@rm IP

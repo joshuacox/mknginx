@@ -1,25 +1,25 @@
 
-upstream REPLACEME_NAME {
+upstream REPLACEME_SITENAME {
   server REPLACEME_IP:REPLACEME_PORT fail_timeout=0;
 }
 server {
   listen   80;
-  server_name REPLACEME_NAME.REPLACEME_DOMAIN;
-  return 301 https://REPLACEME_NAME.REPLACEME_DOMAIN$request_uri;
+  server_name REPLACEME_SITENAME.REPLACEME_DOMAIN;
+  return 301 https://REPLACEME_SITENAME.REPLACEME_DOMAIN$request_uri;
 }
 server {
   listen 443 ssl http2;
-  server_name REPLACEME_NAME.REPLACEME_DOMAIN;
-  auth_basic "Restricted Fuck off!";
+  server_name REPLACEME_SITENAME.REPLACEME_DOMAIN;
+  auth_basic "Restricted!";
   auth_basic_user_file /etc/nginx/private/httplock;
-  ssl_certificate /etc/letsencrypt/live/REPLACEME_NAME.REPLACEME_DOMAIN/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/REPLACEME_NAME.REPLACEME_DOMAIN/privkey.pem;
+  ssl_certificate /etc/letsencrypt/live/REPLACEME_SITENAME.REPLACEME_DOMAIN/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/REPLACEME_SITENAME.REPLACEME_DOMAIN/privkey.pem;
         proxy_connect_timeout       75s;
         proxy_send_timeout          75s;
         proxy_read_timeout          75s;
         send_timeout                75s;
   location / {
     include /etc/nginx/location.conf;
-    proxy_pass http://REPLACEME_NAME;
+    proxy_pass http://REPLACEME_SITENAME;
   }
 }
