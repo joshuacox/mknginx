@@ -226,6 +226,7 @@ site: SITENAME DOMAIN IP PORT NGINX_DATADIR
 	rm -Rf $(TMP)
 
 sitecert: EMAIL SITENAME DOMAIN
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval DOMAIN := $(shell cat DOMAIN))
 	$(eval EMAIL := $(shell cat EMAIL))
 	$(eval SITENAME := $(shell cat SITENAME))
