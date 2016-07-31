@@ -112,19 +112,15 @@ TAG:
 
 rmall: rm
 
-grab: grabnginxdir mvdatadir
+grab: grabnginxdir
 
-grabnginxdir:
-	mkdir -p datadir/etc
-	docker cp `cat cid`:/usr/share/nginx/html - |sudo tar -C datadir/ -pxvf -
-	docker cp `cat cid`:/etc/nginx - |sudo tar -C datadir/etc -pxvf -
-	sudo chown -R $(user). datadir/html
-	sudo chown -R $(user). datadir/etc
-
-mvdatadir:
-	sudo mv -i datadir /tmp
-	echo /tmp/datadir > NGINX_DATADIR
-	echo "Move datadir out of tmp and update DATADIR here accordingly for persistence"
+grabnginxdir: NGINX_DATADIR
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	mkdir -p $(NGINX_DATADIR)/etc
+	docker cp `cat cid`:/usr/share/nginx/html - |sudo tar -C $(NGINX_DATADIR)/ -pxvf -
+	docker cp `cat cid`:/etc/nginx - |sudo tar -C $(NGINX_DATADIR)/etc -pxvf -
+	sudo chown -R $(user). $(NGINX_DATADIR)/html
+	sudo chown -R $(user). $(NGINX_DATADIR)/etc
 
 NGINX_DATADIR:
 	@while [ -z "$$NGINX_DATADIR" ]; do \
@@ -208,7 +204,7 @@ renew:
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
 	quay.io/letsencrypt/letsencrypt:latest renew
 
-site: SITENAME DOMAIN IP PORT
+site: SITENAME DOMAIN IP PORT NGINX_DATADIR
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval PORT := $(shell cat PORT))
@@ -224,6 +220,11 @@ site: SITENAME DOMAIN IP PORT
 	sed -i "s/REPLACEME_DOMAIN/$(DOMAIN)/g" $(TMP)/$(SITENAME).$(DOMAIN)
 	sed -i "s/REPLACEME_SITENAME/$(SITENAME)/g" $(TMP)/$(SITENAME).$(DOMAIN)
 	cat $(TMP)/$(SITENAME).$(DOMAIN)
+	sudo cp $(TMP)/$(SITENAME).$(DOMAIN) $(NGINX_DATADIR)/etc/nginx/sites-available/
+	cd $(NGINX_DATADIR)/etc/nginx/sites-enabled/ ; \
+	sudo rm -f $(SITENAME).$(DOMAIN)  ; \
+	sudo ln -s ../sites-available/$(SITENAME).$(DOMAIN) ./
+	ls -lh $(NGINX_DATADIR)/etc/nginx/sites-enabled/ 
 	rm -Rf $(TMP)
 
 sitecert: EMAIL SITENAME DOMAIN
