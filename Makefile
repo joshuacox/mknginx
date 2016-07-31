@@ -167,10 +167,10 @@ letstestCID:
 
 cert:
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
-	@while [ -z "$$HOSTNAME" ]; do \
+	@while [ -z "$(TMP)/$$HOSTNAME" ]; do \
 		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [HOSTNAME]: " HOSTNAME; echo "$$HOSTNAME" >$(TMP)/HOSTNAME; \
 	done ;
-	@while [ -z "$$EMAIL" ]; do \
+	@while [ -z "$(TMP)/$$EMAIL" ]; do \
 		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL" > $(TMP)/EMAIL; \
 	done ;
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
