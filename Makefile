@@ -37,13 +37,14 @@ runprod:
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
 	$(eval NAME := $(shell cat NAME))
 	$(eval TAG := $(shell cat TAG))
+	$(eval IP := $(shell cat IP))
 	chmod 777 $(TMP)
 	@docker run --name=$(NAME) \
 	--cidfile="cid" \
 	-v $(TMP):/tmp \
 	-d \
-	-p 80:80 \
-	-p 443:443 \
+	-p $(IP):80:80 \
+	-p $(IP):443:443 \
 	-v $(NGINX_DATADIR)/etc/nginx:/etc/nginx \
 	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
@@ -130,8 +131,9 @@ proxy: cid genCID letsencryptCID
 cid:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval NAME := $(shell cat NAME))
+	$(eval IP := $(shell cat IP))
 	docker pull nginx
-	docker run -d -p 80:80 -p 443:443 \
+	docker run -d -p $(IP):80:80 -p $(IP):443:443 \
 	--name=$(NAME) \
 	--cidfile="cid" \
 	-v $(NGINX_DATADIR)/etc/nginx/certs:/etc/nginx/certs:ro \
@@ -186,10 +188,11 @@ letstestCID:
 
 cert:
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
+	$(eval IP := $(shell cat IP))
 	read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [HOSTNAME]: " HOSTNAME; echo "$$HOSTNAME" >$(TMP)/HOSTNAME; \
 	read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL" > $(TMP)/EMAIL; \
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
-	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
+	docker run -it --rm -p $(IP):443:443 -p $(IP):80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
 	quay.io/letsencrypt/letsencrypt:latest auth --standalone -n -d "`cat $(TMP)/HOSTNAME`" --agree-tos --email "`cat $(TMP)/EMAIL`"
@@ -197,7 +200,8 @@ cert:
 
 renew:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
-	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
+	$(eval IP := $(shell cat IP))
+	docker run -it --rm -p $(IP):443:443 -p $(IP):80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
 	quay.io/letsencrypt/letsencrypt:latest renew
@@ -230,7 +234,8 @@ sitecert: EMAIL SITENAME DOMAIN
 	$(eval DOMAIN := $(shell cat DOMAIN))
 	$(eval EMAIL := $(shell cat EMAIL))
 	$(eval SITENAME := $(shell cat SITENAME))
-	docker run -it --rm -p 443:443 -p 80:80 --name certbot \
+	$(eval IP := $(shell cat IP))
+	docker run -it --rm -p $(IP):443:443 -p $(IP):80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
 	quay.io/letsencrypt/letsencrypt:latest auth --standalone -n -d "$(SITENAME).$(DOMAIN)" --agree-tos --email "$(EMAIL)"
