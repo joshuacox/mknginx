@@ -19,19 +19,21 @@ temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
-runtemp:
+runtemp: IP TAG NAME
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
 	$(eval NAME := $(shell cat NAME))
 	$(eval TAG := $(shell cat TAG))
+	$(eval IP := $(shell cat IP))
 	chmod 777 $(TMP)
 	@docker run --name=$(NAME) \
 	--cidfile="cid" \
 	-v $(TMP):/tmp \
 	-d \
-	-P \
+	-p $(IP):80:80 \
+	-p $(IP):443:443 \
 	-t $(TAG)
 
-runprod:
+runprod: IP TAG NAME
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	echo " the nginx data dir is $(NGINX_DATADIR)"
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
@@ -128,7 +130,7 @@ NGINX_DATADIR:
 
 proxy: cid genCID letsencryptCID
 
-cid:
+cid: IP NAME
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval NAME := $(shell cat NAME))
 	$(eval IP := $(shell cat IP))
