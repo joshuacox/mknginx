@@ -1,5 +1,5 @@
 
-upstream REPLACEME_SITENAME {
+upstream REPLACEME_SITENAME.REPLACEME_DOMAIN {
   server REPLACEME_IP:REPLACEME_PORT fail_timeout=0;
 }
 server {
@@ -27,6 +27,6 @@ server {
   ssl_prefer_server_ciphers on;
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
   location / {
-    proxy_pass http://REPLACEME_SITENAME;
+    proxy_pass http://REPLACEME_SITENAME.REPLACEME_DOMAIN;
   }
 }
