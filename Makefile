@@ -19,6 +19,8 @@ temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
+next: grab rmtemp prod
+
 runtemp: IP TAG NAME
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
 	$(eval NAME := $(shell cat NAME))
