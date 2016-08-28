@@ -49,7 +49,6 @@ runprod: IP TAG NAME
 	-d \
 	-p $(IP):80:80 \
 	-p $(IP):443:443 \
-	--net=host \
 	-v $(NGINX_DATADIR)/etc/nginx:/etc/nginx \
 	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
