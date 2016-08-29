@@ -19,6 +19,8 @@ temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
+linked: NGINX_DATADIR rm build runlinked
+
 next: grab rmtemp prod
 
 runtemp: IP TAG NAME
@@ -49,6 +51,26 @@ runprod: IP TAG NAME
 	-d \
 	-p $(IP):80:80 \
 	-p $(IP):443:443 \
+	-v $(NGINX_DATADIR)/etc/nginx:/etc/nginx \
+	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
+	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
+	-t $(TAG)
+
+runlinked: IP TAG NAME
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
+	$(eval NAME := $(shell cat NAME))
+	$(eval LINKS := $(shell cat LINKS))
+	$(eval TAG := $(shell cat TAG))
+	$(eval IP := $(shell cat IP))
+	chmod 777 $(TMP)
+	@docker run --name=$(NAME) \
+	--cidfile="cid" \
+	-v $(TMP):/tmp \
+	-d \
+	-p $(IP):80:80 \
+	-p $(IP):443:443 \
+	$(LINKS) \
 	-v $(NGINX_DATADIR)/etc/nginx:/etc/nginx \
 	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
