@@ -17,7 +17,7 @@ will prompt you for the necessary information to setup a new site proxy (usually
 
 `make sitecert`
 
-will mget you a SSL/TLS certificate from LetsEncrypt
+will get you a SSL/TLS certificate from LetsEncrypt
 
 `make prod`
 

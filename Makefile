@@ -1,4 +1,6 @@
 .PHONY: all help build run builddocker rundocker kill rm-image rm clean enter logs
+#CERTBOT_IMG=quay.io/letsencrypt/letsencrypt:latest
+CERTBOT_IMG=certbot/certbot
 
 all: help
 
@@ -221,7 +223,7 @@ cert:
 	docker run -it --rm -p $(IP):443:443 -p $(IP):80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
-	quay.io/letsencrypt/letsencrypt:latest auth --standalone -n -d "`cat $(TMP)/HOSTNAME`" --agree-tos --email "`cat $(TMP)/EMAIL`"
+	${CERTBOT_IMG} auth --standalone -n -d "`cat $(TMP)/HOSTNAME`" --agree-tos --email "`cat $(TMP)/EMAIL`"
 	rm -Rf $(TMP)
 
 renew:
@@ -230,7 +232,7 @@ renew:
 	docker run -it --rm -p $(IP):443:443 -p $(IP):80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
-	quay.io/letsencrypt/letsencrypt:latest renew
+	${CERTBOT_IMG} renew
 
 site: SITENAME DOMAIN IP PORT NGINX_DATADIR
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
@@ -264,7 +266,7 @@ sitecert: EMAIL SITENAME DOMAIN
 	docker run -it --rm -p $(IP):443:443 -p $(IP):80:80 --name certbot \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-v "$(NGINX_DATADIR)/var/lib/letsencrypt:/var/lib/letsencrypt" \
-	quay.io/letsencrypt/letsencrypt:latest auth --standalone -n -d "$(SITENAME).$(DOMAIN)" --agree-tos --email "$(EMAIL)"
+	${CERTBOT_IMG} auth --standalone -n -d "$(SITENAME).$(DOMAIN)" --agree-tos --email "$(EMAIL)"
 
 nusite: cleansite site
 
