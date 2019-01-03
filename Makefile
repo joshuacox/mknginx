@@ -104,7 +104,7 @@ logs:
 
 EMAIL:
 	@while [ -z "$$EMAIL" ]; do \
-		read -r -p "Enter the name you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL">>EMAIL; cat EMAIL; \
+		read -r -p "Enter the email you wish to associate with this container [EMAIL]: " EMAIL; echo "$$EMAIL">>EMAIL; cat EMAIL; \
 	done ;
 
 NAME:
@@ -114,22 +114,22 @@ NAME:
 
 SITENAME:
 	@while [ -z "$$SITENAME" ]; do \
-		read -r -p "Enter the name you wish to associate with this container [SITENAME]: " SITENAME; echo "$$SITENAME">>SITENAME; cat SITENAME; \
+		read -r -p "Enter the sitename you wish to associate with this container [SITENAME]: " SITENAME; echo "$$SITENAME">>SITENAME; cat SITENAME; \
 	done ;
 
 DOMAIN:
 	@while [ -z "$$DOMAIN" ]; do \
-		read -r -p "Enter the name you wish to associate with this container [DOMAIN]: " DOMAIN; echo "$$DOMAIN">>DOMAIN; cat DOMAIN; \
+		read -r -p "Enter the domain name you wish to associate with this container [DOMAIN]: " DOMAIN; echo "$$DOMAIN">>DOMAIN; cat DOMAIN; \
 	done ;
 
 IP:
 	@while [ -z "$$IP" ]; do \
-		read -r -p "Enter the name you wish to associate with this container [IP]: " IP; echo "$$IP">>IP; cat IP; \
+		read -r -p "Enter the IP you wish to associate with this container [IP]: " IP; echo "$$IP">>IP; cat IP; \
 	done ;
 
 PORT:
 	@while [ -z "$$PORT" ]; do \
-		read -r -p "Enter the name you wish to associate with this container [PORT]: " PORT; echo "$$PORT">>PORT; cat PORT; \
+		read -r -p "Enter the port you wish to associate with this container [PORT]: " PORT; echo "$$PORT">>PORT; cat PORT; \
 	done ;
 
 TAG:
